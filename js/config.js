@@ -1,4 +1,3 @@
-// js/config.js
 window.golesP1 = 0;
 window.golesCPU = 0;
 window.historialP1 = [];
@@ -12,3 +11,7 @@ window.marcadorTexto = null;
 window.barraTiempo = null;
 window.rectTiro = null;
 window.rectArquero = null;
+
+// AGREGADO: Guardar la posición elegida por el jugador al atajar
+window.tuColA = 2;
+window.tuRowA = 1;
