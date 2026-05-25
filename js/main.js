@@ -72,30 +72,41 @@ function create() {
 
     this.add.rectangle(400, 550, 200, 20, 0x555555);
     window.barraTiempo = this.add.rectangle(300, 550, 200, 20, 0x00ff00).setOrigin(0, 0.5);
-    window.ball = this.add.image(400, 380, 'pelotaNueva').setScale(0.5); 
+    
+    // FIX: Cambiado de 380 a 500 para arrancar exactamente en el punto penal real
+    window.ball = this.add.image(400, 500, 'pelotaNueva').setScale(0.5); 
 
-    // Crear las 15 zonas interactuables
-    for (let col = 0; col < 5; col++) {
-        for (let row = 0; row < 3; row++) {
-            let x = arcoX + (col * celdaAncho) + (celdaAncho / 2);
-            let y = arcoY + (row * celdaAlto) + (celdaAlto / 2);
-            let zona = this.add.rectangle(x, y, celdaAncho, celdaAlto, 0xff0000, 0.01).setStrokeStyle(1, 0xffffff, 0.15).setInteractive();
+// Crear las 15 zonas interactuables
+for (let col = 0; col < 5; col++) {
+    for (let row = 0; row < 3; row++) {
+        let x = arcoX + (col * celdaAncho) + (celdaAncho / 2);
+        let y = arcoY + (row * celdaAlto) + (celdaAlto / 2);
+        let zona = this.add.rectangle(x, y, celdaAncho, celdaAlto, 0xff0000, 0.01).setStrokeStyle(1, 0xffffff, 0.15).setInteractive();
+        
+        zona.on('pointerdown', () => {
+            // CRUCIAL: Bloqueo inmediato antes de evaluar cualquier otra línea
+            if (window.ejecutandoTiro) {
+                return; 
+            }
             
-            zona.on('pointerdown', () => {
-                if (window.esTurnoP1 && !window.esperandoAtajada) {
-                    let arqueroCol = Math.floor(Math.random() * 5);
-                    let arqueroRow = Math.floor(Math.random() * 3);
-                    ejecutarDisparo(this, col, row, arqueroCol, arqueroRow, true);
-                } else if (window.esperandoAtajada) {
-                    window.tuColA = col; 
-                    window.tuRowA = row;
-                    let c = window.zonaGolCPU % 5;
-                    let r = Math.floor(window.zonaGolCPU / 5);
-                    ejecutarDisparo(this, c, r, window.tuColA, window.tuRowA, false);
-                }
-            });
-        }
+            // Congelamos el juego de inmediato para el próximo milisegundo
+            window.ejecutandoTiro = true;
+
+            if (window.esTurnoP1 && !window.esperandoAtajada) {
+                let arqueroCol = Math.floor(Math.random() * 5);
+                let arqueroRow = Math.floor(Math.random() * 3);
+                ejecutarDisparo(this, col, row, arqueroCol, arqueroRow, true);
+            } else if (window.esperandoAtajada) {
+                window.tuColA = col; 
+                window.tuRowA = row;
+                let c = window.zonaGolCPU % 5;
+                let r = Math.floor(window.zonaGolCPU / 5);
+                ejecutarDisparo(this, c, r, window.tuColA, window.tuRowA, false);
+            }
+        });
     }
+}
+
     
     actualizarRetratos(this);
     iniciarBarra(this, true);

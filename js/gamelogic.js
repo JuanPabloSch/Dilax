@@ -1,4 +1,7 @@
 function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
+    // Forzamos que esté bloqueado por seguridad
+    window.ejecutandoTiro = true;
+
     // FIX: Volamos la línea de scaleX para que la barra se mueva libremente
     escena.tweens.killTweensOf(window.barraTiempo);
     
@@ -42,13 +45,11 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
 
     let esAtajado = (colT === colA && rowT === rowA && tipoResultado === "NORMAL");
     
-        if(window.rectTiro) window.rectTiro.destroy(); 
+    if(window.rectTiro) window.rectTiro.destroy(); 
     if(window.rectArquero) window.rectArquero.destroy();
     window.rectTiro = escena.add.rectangle(cfg.x + (colT * cfg.anchoCelda) + (cfg.anchoCelda / 2), cfg.y + (rowT * cfg.altoCelda) + (cfg.altoCelda / 2), cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, 0x3366ff);
     window.rectArquero = escena.add.rectangle(xA, yA, cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, esJugador ? 0xff6666 : 0x66ff66);
 
-    // FIX: Escala inicial corregida a 0.8
-        // Forzamos la escala a 0.5 antes de patear y reseteamos el ángulo a 0 por las dudas
     window.ball.setScale(0.5);
     window.ball.setAngle(0);
 
@@ -57,9 +58,9 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
         targets: window.ball, 
         x: xT, 
         y: yT, 
-        scaleX: 0.25, // Como usás base 0.5, se reduce a la mitad al llegar a la red
+        scaleX: 0.25, 
         scaleY: 0.25, 
-        angle: 360,   // AGREGADO: Pega una vuelta completa (efecto de rosca/giro)
+        angle: 360,   
         duration: 500,
         onComplete: () => {
             if (tipoResultado === "NORMAL" && !esAtajado) {
@@ -76,13 +77,15 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
             window.marcadorTexto.setText(`${nomP1} ${window.golesP1} - ${window.golesCPU} ${nomCPU}`);
             
             escena.time.delayedCall(1000, () => {
-                // FIX: El punto de penal ahora vuelve exactamente a Y=500
-                window.ball.setPosition(400, 380);
-                
+                // CORRECCIÓN CLAVE: Volvemos exactamente a Y=500 (Punto Penal)
+                window.ball.setPosition(400, 500);
                 window.ball.setScale(0.5); 
                 window.ball.setAngle(0); 
                 
                 dibujarHUD(escena);
+
+                // ¡CRUCIAL! Liberamos el juego JUSTO ANTES de iniciar el nuevo turno o barra
+                window.ejecutandoTiro = false;
 
                 if (esJugador) {
                     window.esperandoAtajada = true; window.esTurnoP1 = false;
@@ -116,14 +119,19 @@ function iniciarBarra(escena, esJugador) {
         targets: window.barraTiempo, scaleX: 0, duration: 3000, 
         onComplete: () => {
             if (esJugador) {
+                // Si el jugador no pateó a tiempo, el juego se autoejecuta en el centro
+                // Activamos bloqueo para evitar clics tardíos residuales
+                window.ejecutandoTiro = true;
                 ejecutarDisparo(escena, 2, 1, Math.floor(Math.random() * 5), Math.floor(Math.random() * 3), true);
             } else {
+                window.ejecutandoTiro = true;
                 let c = window.zonaGolCPU % 5, r = Math.floor(window.zonaGolCPU / 5);
                 ejecutarDisparo(escena, c, r, window.tuColA, window.tuRowA, false);
             }
         }
     });
 }
+
 
 function verificarFinPartido() {
     let tirosP1 = window.historialP1.length;
