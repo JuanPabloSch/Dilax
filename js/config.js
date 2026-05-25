@@ -11,12 +11,12 @@ window.marcadorTexto = null;
 window.barraTiempo = null;
 window.rectTiro = null;
 window.rectArquero = null;
-window.tuColA = 2;
-window.tuRowA = 1;
+window.tuColA = 2; // Columna central por defecto
+window.tuRowA = 1; // Fila central por defecto
 window.retratoIzquierdo = null;
 window.retratoDerecho = null;
 
-// BASE DE DATOS DE EQUIPOS
+// Base de datos oficial de tus plantillas
 window.baseDeDatosEquipos = {
     "ARG": {
         nombre: "Indio Malo",

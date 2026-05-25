@@ -1,9 +1,8 @@
-const config = {
+const phaserConfig = {
     type: Phaser.AUTO, 
     width: 800, 
     height: 600, 
     backgroundColor: '#2d862d',
-    // FIX: Esto le avisa al navegador que optimice las lecturas repetidas de imágenes
     contextOptions: {
         willReadFrequently: true
     },
@@ -13,59 +12,64 @@ const config = {
     }
 };
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(phaserConfig);
 
-
-// AGREGADO: Función para cargar la imagen de fondo antes de que empiece el juego
 function preload() {
+    // 1. Cargar fondo de cancha
     this.load.image('fondoCancha', 'bg/penales.png');
 
-this.load.image('El Negrouu', 'players/negrouu.png');
+    // 2. Carga de fotos apuntando a tus archivos físicos reales en minúsculas
+    this.load.image('El Negrouu', 'players/negrouu.png');
     this.load.image('Sebu', 'players/sebu.png');
     this.load.image('Chino', 'players/chino.png');
     this.load.image('Juano', 'players/juano.png');
     this.load.image('Nahui', 'players/nahui.png');
 
-    // Equipo Ranchos FC (BRA)
     this.load.image('Rolo', 'players/rolo.png');
     this.load.image('El Gibe', 'players/gibe.png');
     this.load.image('Santos', 'players/santos.png');
     this.load.image('El Oscar', 'players/oscar.png');
     this.load.image('Caralucas', 'players/caralucas.png');
 }
-function create() {
-    // 1. DIBUJAR EL FONDO PRIMERO (Para que todo lo demás se dibuje arriba)
-    // El fondo se posiciona en el centro de la pantalla (400, 300)
-    let fondo = this.add.image(400, 300, 'fondoCancha');
-    
-    // Opcional: Si tu imagen no mide justo 800x600, descomentá la línea de abajo para estirarla
-    // fondo.setDisplaySize(800, 600);
 
-    // 2. Dibujar el arco de fondo blanco con borde negro
-    // Nota: Si tu imagen ya trae el arco dibujado, podés borrar o comentar esta línea
-    this.add.rectangle(400, 150, 400, 200, 0xffffff, 0.2).setStrokeStyle(4, 0x000000);
-    
-    // Guardamos las referencias en el objeto global "window"
+function create() {
+    // Dibujar fondo estirado
+    let fondo = this.add.image(400, 300, 'fondoCancha');
+    fondo.setDisplaySize(800, 600);
+
+    // Medidas definitivas del arco
+    const arcoX = 200;       
+    const arcoY = 95;        
+    const arcoAncho = 400;   
+    const arcoAlto = 135;    
+
+    const celdaAncho = arcoAncho / 5; 
+    const celdaAlto = arcoAlto / 3;   
+
+    window.arcoConfig = {
+        x: arcoX,
+        y: arcoY,
+        anchoCelda: celdaAncho,
+        altoCelda: celdaAlto
+    };
+
     window.marcadorTexto = this.add.text(400, 30, 'P1: 0 - CPU: 0', { fontSize: '32px', fill: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.add.rectangle(400, 550, 200, 20, 0x555555);
     window.barraTiempo = this.add.rectangle(300, 550, 200, 20, 0x00ff00).setOrigin(0, 0.5);
-    window.ball = this.add.circle(400, 500, 15, 0xffffff).setStrokeStyle(2, 0x000000);
+    window.ball = this.add.circle(400, 520, 15, 0xffffff).setStrokeStyle(2, 0x000000);
 
-    // Crear las 15 zonas interactivas del arco (5 columnas x 3 filas)
+    // Crear las 15 zonas interactuables
     for (let col = 0; col < 5; col++) {
         for (let row = 0; row < 3; row++) {
-            let x = 200 + (col * 80) + 40;
-            let y = 50 + (row * 66.6) + 33;
-            
-            // Bajamos la opacidad del rojo a 0.05 para que no te tape tu nueva imagen de fondo
-            let zona = this.add.rectangle(x, y, 80, 66.6, 0xff0000, 0.05).setStrokeStyle(1, 0xffffff, 0.3).setInteractive();
+            let x = arcoX + (col * celdaAncho) + (celdaAncho / 2);
+            let y = arcoY + (row * celdaAlto) + (celdaAlto / 2);
+            let zona = this.add.rectangle(x, y, celdaAncho, celdaAlto, 0xff0000, 0.01).setStrokeStyle(1, 0xffffff, 0.15).setInteractive();
             
             zona.on('pointerdown', () => {
                 if (window.esTurnoP1 && !window.esperandoAtajada) {
                     let arqueroCol = Math.floor(Math.random() * 5);
                     let arqueroRow = Math.floor(Math.random() * 3);
                     ejecutarDisparo(this, col, row, arqueroCol, arqueroRow, true);
-
                 } else if (window.esperandoAtajada) {
                     window.tuColA = col; 
                     window.tuRowA = row;
