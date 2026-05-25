@@ -61,7 +61,10 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
                 esJugador ? window.historialP1.push(tipoResultado) : window.historialCPU.push(tipoResultado);
             }
             
-            window.marcadorTexto.setText(`P1: ${window.golesP1} - CPU: ${window.golesCPU}`);
+            // MODIFICADO: Mantiene los nombres reales actualizados en base a los goles actuales
+            let nomP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1].nombre;
+            let nomCPU = window.baseDeDatosEquipos[window.equipoSeleccionadoCPU].nombre;
+            window.marcadorTexto.setText(`${nomP1} ${window.golesP1} - ${window.golesCPU} ${nomCPU}`);
             
             escena.time.delayedCall(1000, () => {
                 window.ball.setPosition(400, 520);
@@ -87,6 +90,7 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
         }
     });
 }
+
 
 function iniciarBarra(escena, esJugador) {
     window.barraTiempo.scaleX = 1;

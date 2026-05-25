@@ -53,7 +53,21 @@ function create() {
         altoCelda: celdaAlto
     };
 
-    window.marcadorTexto = this.add.text(400, 30, 'P1: 0 - CPU: 0', { fontSize: '32px', fill: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    // --- MODIFICADO: MARCADOR SUPERIOR RETRO TRANSLÚCIDO ---
+    // Rectángulo negro de fondo con opacidad 0.6
+    this.add.rectangle(400, 35, 520, 45, 0x000000, 0.6).setStrokeStyle(2, 0xffffff, 0.3);
+    
+    let nomP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1].nombre;
+    let nomCPU = window.baseDeDatosEquipos[window.equipoSeleccionadoCPU].nombre;
+
+    window.marcadorTexto = this.add.text(400, 35, `${nomP1} 0 - 0 ${nomCPU}`, { 
+        fontSize: '22px', 
+        fill: '#ffffff', 
+        fontStyle: 'bold',
+        fontFamily: 'Courier New, monospace'
+    }).setOrigin(0.5);
+    // -------------------------------------------------------
+
     this.add.rectangle(400, 550, 200, 20, 0x555555);
     window.barraTiempo = this.add.rectangle(300, 550, 200, 20, 0x00ff00).setOrigin(0, 0.5);
     window.ball = this.add.circle(400, 520, 15, 0xffffff).setStrokeStyle(2, 0x000000);
