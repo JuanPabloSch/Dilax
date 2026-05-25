@@ -23,7 +23,7 @@ function actualizarRetratos(escena) {
 
     let datosP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1];
     let datosCPU = window.baseDeDatosEquipos[window.equipoSeleccionadoCPU];
-    let idxJugador = window.ronda % 4; // Rotación entre tus 4 jugadores
+    let idxJugador = window.ronda % 4;
 
     window.retratoIzquierdo = escena.add.container(75, 410);
     window.retratoDerecho = escena.add.container(725, 410);
@@ -32,31 +32,40 @@ function actualizarRetratos(escena) {
         let nombrePateador = datosP1.pateadores[idxJugador];
         let nombreArquero = datosCPU.arquero;
 
-        let marcoIzq = escena.add.rectangle(0, 0, 100, 110, datosP1.colorRopa).setStrokeStyle(3, 0xffffff);
+        // --- IZQUIERDA: P1 PATEANDO ---
+        // FIX: Ponemos fondo negro (0x000000) con opacidad de 0.65 para que sea translúcido. El borde mantiene el color del equipo.
+        let marcoIzq = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosP1.colorRopa);
         let imgIzq = escena.add.image(0, 0, nombrePateador).setDisplaySize(94, 104);
-        let cartelIzq = escena.add.rectangle(0, 75, 110, 34, 0x111111, 0.8).setStrokeStyle(1, 0xffffff);
-        let txtIzq = escena.add.text(0, 75, `${nombrePateador}\n(PATEA)`, { fontSize: '11px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
+        let cartelIzq = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
+        let txtIzq = escena.add.text(0, 75, `${nombrePateador}\n⚽`, { fontSize: '14px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
         window.retratoIzquierdo.add([marcoIzq, imgIzq, cartelIzq, txtIzq]);
 
-        let marcoDer = escena.add.rectangle(0, 0, 100, 110, datosCPU.colorRopa).setStrokeStyle(3, 0xffffff);
+        // --- DERECHA: CPU ATAJANDO ---
+        // FIX: Fondo negro translúcido para la CPU
+        let marcoDer = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosCPU.colorRopa);
         let imgDer = escena.add.image(0, 0, nombreArquero).setDisplaySize(94, 104);
-        let cartelDer = escena.add.rectangle(0, 75, 110, 34, 0x111111, 0.8).setStrokeStyle(1, 0xffffff);
-        let txtDer = escena.add.text(0, 75, `${nombreArquero}\n(ARQUERO)`, { fontSize: '11px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
+        let cartelDer = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
+        let txtDer = escena.add.text(0, 75, `${nombreArquero}\n🧤`, { fontSize: '14px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
         window.retratoDerecho.add([marcoDer, imgDer, cartelDer, txtDer]);
+
     } else {
         let nombreArquero = datosP1.arquero;
         let nombrePateador = datosCPU.pateadores[idxJugador];
 
-        let marcoIzq = escena.add.rectangle(0, 0, 100, 110, datosP1.colorRopa).setStrokeStyle(3, 0xffffff);
+        // --- IZQUIERDA: P1 ATAJANDO ---
+        // FIX: Fondo negro translúcido al cambiar de roles
+        let marcoIzq = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosP1.colorRopa);
         let imgIzq = escena.add.image(0, 0, nombreArquero).setDisplaySize(94, 104);
-        let cartelIzq = escena.add.rectangle(0, 75, 110, 34, 0x111111, 0.8).setStrokeStyle(1, 0xffffff);
-        let txtIzq = escena.add.text(0, 75, `${nombreArquero}\n(ARQUERO)`, { fontSize: '11px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
+        let cartelIzq = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
+        let txtIzq = escena.add.text(0, 75, `${nombreArquero}\n🧤`, { fontSize: '14px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
         window.retratoIzquierdo.add([marcoIzq, imgIzq, cartelIzq, txtIzq]);
 
-        let marcoDer = escena.add.rectangle(0, 0, 100, 110, datosCPU.colorRopa).setStrokeStyle(3, 0xffffff);
+        // --- DERECHA: CPU PATEANDO ---
+        // FIX: Fondo negro translúcido al cambiar de roles
+        let marcoDer = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosCPU.colorRopa);
         let imgDer = escena.add.image(0, 0, nombrePateador).setDisplaySize(94, 104);
-        let cartelDer = escena.add.rectangle(0, 75, 110, 34, 0x111111, 0.8).setStrokeStyle(1, 0xffffff);
-        let txtDer = escena.add.text(0, 75, `${nombrePateador}\n(PATEA)`, { fontSize: '11px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
+        let cartelDer = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
+        let txtDer = escena.add.text(0, 75, `${nombrePateador}\n⚽`, { fontSize: '14px', fill: '#ffffff', align: 'center', fontStyle: 'bold' }).setOrigin(0.5);
         window.retratoDerecho.add([marcoDer, imgDer, cartelDer, txtDer]);
     }
 }
