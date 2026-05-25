@@ -5,17 +5,43 @@ function dibujarHUD(escena) {
     if (tandaActual < 0) tandaActual = 0;
     let indiceInicio = tandaActual * 5;
 
+    // Dibujar marcadores O / X alineados abajo a la izquierda (P1)
     for (let i = indiceInicio; i < window.historialP1.length; i++) {
-        let color = (window.historialP1[i] === "GOL") ? 0x00ff00 : 0xff0000;
-        let c = escena.add.circle(50 + ((i % 5) * 25), 550, 10, color).setStrokeStyle(2, 0xffffff);
-        c.name = 'hudCirculo';
+        let esGol = (window.historialP1[i] === "GOL");
+        let textoSimbolo = esGol ? "O" : "X";
+        let colorSimbolo = esGol ? "#00ff00" : "#ff0000";
+
+        // AGRANDADO: fontSize a 34px, Y a 535 para centrar y espaciado a 28px
+        let t = escena.add.text(45 + ((i % 5) * 28), 535, textoSimbolo, {
+            fontSize: '34px',
+            fill: colorSimbolo,
+            fontStyle: 'bold',
+            fontFamily: 'Courier New, monospace'
+        }).setOrigin(0.5);
+        
+        t.setStroke('#000000', 5); // Un pelito más de borde negro para acompañar el tamaño
+        t.name = 'hudCirculo';
     }
+    
+    // Dibujar marcadores O / X alineados abajo a la derecha (CPU)
     for (let i = indiceInicio; i < window.historialCPU.length; i++) {
-        let color = (window.historialCPU[i] === "GOL") ? 0x00ff00 : 0xff0000;
-        let c = escena.add.circle(600 + ((i % 5) * 25), 550, 10, color).setStrokeStyle(2, 0xffffff);
-        c.name = 'hudCirculo';
+        let esGol = (window.historialCPU[i] === "GOL");
+        let textoSimbolo = esGol ? "O" : "X";
+        let colorSimbolo = esGol ? "#00ff00" : "#ff0000";
+
+        // AGRANDADO: Misma proporción para el lado de la CPU
+        let t = escena.add.text(595 + ((i % 5) * 28), 535, textoSimbolo, {
+            fontSize: '34px',
+            fill: colorSimbolo,
+            fontStyle: 'bold',
+            fontFamily: 'Courier New, monospace'
+        }).setOrigin(0.5);
+        
+        t.setStroke('#000000', 5);
+        t.name = 'hudCirculo';
     }
 }
+
 
 function actualizarRetratos(escena) {
     if (window.retratoIzquierdo) { window.retratoIzquierdo.destroy(); window.retratoIzquierdo = null; }
@@ -33,7 +59,6 @@ function actualizarRetratos(escena) {
         let nombreArquero = datosCPU.arquero;
 
         // --- IZQUIERDA: P1 PATEANDO ---
-        // FIX: Ponemos fondo negro (0x000000) con opacidad de 0.65 para que sea translúcido. El borde mantiene el color del equipo.
         let marcoIzq = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosP1.colorRopa);
         let imgIzq = escena.add.image(0, 0, nombrePateador).setDisplaySize(94, 104);
         let cartelIzq = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
@@ -41,7 +66,6 @@ function actualizarRetratos(escena) {
         window.retratoIzquierdo.add([marcoIzq, imgIzq, cartelIzq, txtIzq]);
 
         // --- DERECHA: CPU ATAJANDO ---
-        // FIX: Fondo negro translúcido para la CPU
         let marcoDer = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosCPU.colorRopa);
         let imgDer = escena.add.image(0, 0, nombreArquero).setDisplaySize(94, 104);
         let cartelDer = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
@@ -53,7 +77,6 @@ function actualizarRetratos(escena) {
         let nombrePateador = datosCPU.pateadores[idxJugador];
 
         // --- IZQUIERDA: P1 ATAJANDO ---
-        // FIX: Fondo negro translúcido al cambiar de roles
         let marcoIzq = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosP1.colorRopa);
         let imgIzq = escena.add.image(0, 0, nombreArquero).setDisplaySize(94, 104);
         let cartelIzq = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
@@ -61,7 +84,6 @@ function actualizarRetratos(escena) {
         window.retratoIzquierdo.add([marcoIzq, imgIzq, cartelIzq, txtIzq]);
 
         // --- DERECHA: CPU PATEANDO ---
-        // FIX: Fondo negro translúcido al cambiar de roles
         let marcoDer = escena.add.rectangle(0, 0, 100, 110, 0x000000, 0.65).setStrokeStyle(3, datosCPU.colorRopa);
         let imgDer = escena.add.image(0, 0, nombrePateador).setDisplaySize(94, 104);
         let cartelDer = escena.add.rectangle(0, 75, 110, 36, 0x111111, 0.82).setStrokeStyle(1, 0xffffff);
