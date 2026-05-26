@@ -200,12 +200,22 @@ function create() {
 
 
 
-    // Dibujamos la pantalla de inicio con Depth=101 arriba de absolutamente todo
-    imagenInicio = this.add.image(400, 300, 'fotoInicio').setDisplaySize(800, 600).setDepth(101).setInteractive();
+        // === CONTROL INTELIGENTE DE ARRANQUE POR URL ===
+    const urlParams = new URLSearchParams(window.location.search);
     
-    imagenInicio.on('pointerdown', () => {
-        imagenInicio.destroy(); // Borramos la foto de portada
+    if (urlParams.get('saltarInicio') === 'true') {
+        // Si viene de los créditos, salta el inicio y va directo a la selección
         window.pantallaActual = "SELECCION";
         mostrarPantallaSeleccion();
-    });
+    } else {
+        // Si abre el juego por primera vez de cero, muestra la portada normal
+        imagenInicio = this.add.image(400, 300, 'fotoInicio').setDisplaySize(800, 600).setDepth(101).setInteractive();
+        
+        imagenInicio.on('pointerdown', () => {
+            imagenInicio.destroy();
+            window.pantallaActual = "SELECCION";
+            mostrarPantallaSeleccion();
+        });
+    }
+
 }

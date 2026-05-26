@@ -159,7 +159,10 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
 
                                 // Al hacer un clic en cualquier lado de los créditos, reinicia
                                                                 // Al hacer un clic en cualquier lado de los créditos, reinicia
+                                // Al hacer un clic en cualquier lado de los créditos, recarga directo a selección
                                 escena.input.once('pointerdown', () => {
+                                    window.location.href = window.location.pathname + "?saltarInicio=true";
+
                                     // 1. Limpiamos la foto de créditos de la pantalla
                                     fotoCreditos.destroy(); 
                                     
