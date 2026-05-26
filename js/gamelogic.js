@@ -1,4 +1,5 @@
 function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
+    console.log("DISPARO");
     window.ejecutandoTiro = true;
     escena.tweens.killTweensOf(window.barraTiempo);
     
@@ -15,6 +16,95 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
     
     let rng = Math.random();
     let tipoResultado = "NORMAL"; 
+    let celdaTiro = (rowT * 5) + colT;
+let esAtajado = false;
+
+if (colA === 2) {
+    if (celdaTiro === 2 || celdaTiro === 7 || celdaTiro === 12) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 0 && colA < 2) {
+    if (celdaTiro === 0 || celdaTiro === 1 || celdaTiro === 6) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 1 && colA < 2) {
+    if (celdaTiro === 5 || celdaTiro === 6) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 2 && colA < 2) {
+    if (celdaTiro === 5 || celdaTiro === 10 || celdaTiro === 11) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 0 && colA > 2) {
+    if (celdaTiro === 3 || celdaTiro === 4 || celdaTiro === 8) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 1 && colA > 2) {
+    if (celdaTiro === 8 || celdaTiro === 9) {
+        esAtajado = true;
+    }
+}
+else if (rowA === 2 && colA > 2) {
+    if (celdaTiro === 9 || celdaTiro === 13 || celdaTiro === 14) {
+        esAtajado = true;
+    }
+}
+
+if (colT === colA && rowT === rowA) {
+    esAtajado = true;
+}
+
+if (tipoResultado !== "NORMAL") {
+    esAtajado = false;
+}
+
+if (window.arqueroSprite) {
+
+    window.arqueroSprite.scaleX = 1;
+
+    let equipoEnElArco =
+        window.esTurnoP1
+            ? window.equipoSeleccionadoCPU
+            : window.equipoSeleccionadoP1;
+
+    if (colA === 2) {
+
+        window.arqueroSprite.setTexture(`${equipoEnElArco}_idle`);
+        window.arqueroSprite.x = 400;
+        window.arqueroSprite.y = 230;
+
+        if (celdaTiro === 12)
+            window.arqueroSprite.setFrame(2);
+        else
+            window.arqueroSprite.setFrame(1);
+
+    } else if (colA < 2) {
+
+        window.arqueroSprite.setTexture(`${equipoEnElArco}_vuelo`);
+        window.arqueroSprite.x = 265;
+        window.arqueroSprite.y = 222;
+
+        if (rowA === 0) window.arqueroSprite.setFrame(0);
+        if (rowA === 1) window.arqueroSprite.setFrame(1);
+        if (rowA === 2) window.arqueroSprite.setFrame(2);
+
+    } else {
+
+        window.arqueroSprite.setTexture(`${equipoEnElArco}_vuelo`);
+        window.arqueroSprite.x = 535;
+        window.arqueroSprite.y = 222;
+        window.arqueroSprite.scaleX = -1;
+
+        if (rowA === 0) window.arqueroSprite.setFrame(0);
+        if (rowA === 1) window.arqueroSprite.setFrame(1);
+        if (rowA === 2) window.arqueroSprite.setFrame(2);
+    }
+}
     
     if (rng < 0.05) {
         tipoResultado = "PALO";
@@ -211,245 +301,7 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
         }
     });
 }
-
-    // ===============================================================
- // ¡MÁS ARRIBA QUE LA PELOTA!: La pelota tiene Depth 3, el jugador la tapa al correr
-
-
-    // --- NUEVO SISTEMA DE ZONAS DE ALCANCE DEL ARQUERO (COBERTURA MEJORADA) ---
-    let celdaTiro = (rowT * 5) + colT;
-    let esAtajado = false;
-
-    // 1. ZONA CENTRO (Celdas 2, 7, 12)
-    if (colA === 2) {
-        if (celdaTiro === 2 || celdaTiro === 7 || celdaTiro === 12) {
-            esAtajado = true;
-        }
-    }
-    // 2. ZONA ARRIBA IZQUIERDA (Celdas 0, 1, 6)
-    else if (rowA === 0 && colA < 2) {
-        if (celdaTiro === 0 || celdaTiro === 1 || celdaTiro === 6) {
-            esAtajado = true;
-        }
-    }
-    // 3. ZONA MEDIO IZQUIERDA (Celdas 5, 6)
-    else if (rowA === 1 && colA < 2) {
-        if (celdaTiro === 5 || celdaTiro === 6) {
-            esAtajado = true;
-        }
-    }
-    // 4. ZONA BAJO IZQUIERDA (Celdas 5, 10, 11)
-    else if (rowA === 2 && colA < 2) {
-        if (celdaTiro === 5 || celdaTiro === 10 || celdaTiro === 11) {
-            esAtajado = true;
-        }
-    }
-    // 5. ZONA ARRIBA DERECHA (Celdas 3, 4, 8)
-    else if (rowA === 0 && colA > 2) {
-        if (celdaTiro === 3 || celdaTiro === 4 || celdaTiro === 8) {
-            esAtajado = true;
-        }
-    }
-    // 6. ZONA MEDIO DERECHA (Celdas 8, 9)
-    else if (rowA === 1 && colA > 2) {
-        if (celdaTiro === 8 || celdaTiro === 9) {
-            esAtajado = true;
-        }
-    }
-    // 7. ZONA BAJO DERECHA (Celdas 9, 13, 14)
-    else if (rowA === 2 && colA > 2) {
-        if (celdaTiro === 9 || celdaTiro === 13 || celdaTiro === 14) {
-            esAtajado = true;
-        }
-    }
-
-    // Filtro de seguridad por si coincide la celda exacta
-    if (colT === colA && rowT === rowA) {
-        esAtajado = true;
-    }
-
-    // Si la pelota fue al palo o afuera, se anula la atajada
-    if (tipoResultado !== "NORMAL") {
-        esAtajado = false;
-    }
-    // --------------------------------------------------------------------------
-
-    // --- ASIGNAR TEXTURA DINÁMICA, COORDENADA X Y ESPEJADO SEGÚN EL ARQUERO DE TURNO ---
-    if (window.arqueroSprite) {
-        window.arqueroSprite.scaleX = 1; 
-
-        let equipoEnElArco = window.esTurnoP1 ? window.equipoSeleccionadoCPU : window.equipoSeleccionadoP1;
-
-        if (colA === 2) { // --- CENTRO ---
-            window.arqueroSprite.setTexture(`${equipoEnElArco}_idle`);
-            window.arqueroSprite.x = 400; 
-            window.arqueroSprite.y = 230; 
-            
-            if (celdaTiro === 12) window.arqueroSprite.setFrame(2); 
-            else window.arqueroSprite.setFrame(1); 
-        } 
-        else if (colA < 2) { // --- VOLAR A LA IZQUIERDA (NATURAL) ---
-            window.arqueroSprite.setTexture(`${equipoEnElArco}_vuelo`);
-            window.arqueroSprite.y = 222; 
-            window.arqueroSprite.x = 265; 
-            
-            if (rowA === 0) window.arqueroSprite.setFrame(0); 
-            if (rowA === 1) window.arqueroSprite.setFrame(1); 
-            if (rowA === 2) window.arqueroSprite.setFrame(2); 
-        } 
-        else if (colA > 2) { // --- VOLAR A LA DERECHA (ESPEJADO) ---
-            window.arqueroSprite.setTexture(`${equipoEnElArco}_vuelo`);
-            window.arqueroSprite.y = 222; 
-            window.arqueroSprite.x = 535; 
-            window.arqueroSprite.scaleX = -1; 
-            
-            if (rowA === 0) window.arqueroSprite.setFrame(0); 
-            if (rowA === 1) window.arqueroSprite.setFrame(1); 
-            if (rowA === 2) window.arqueroSprite.setFrame(2); 
-        }
-    }
-
-    // if(window.rectTiro) window.rectTiro.destroy(); 
-    // if(window.rectArquero) window.rectArquero.destroy();
-    // window.rectTiro = escena.add.rectangle(cfg.x + (colT * cfg.anchoCelda) + (cfg.anchoCelda / 2), cfg.y + (rowT * cfg.altoCelda) + (cfg.altoCelda / 2), cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, 0x3366ff);
-    // window.rectArquero = escena.add.rectangle(xA, yA, cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, esJugador ? 0xff6666 : 0x66ff66);
-
-    window.ball.setScale(0.4);
-    window.ball.setAngle(0);
-
-        // El pateador da un paso adelante hacia la pelota (X=400) y patea (Cuadro 1)
-        escena.tweens.add({
-        targets: pateadorSprite,
-        x: 390,
-        duration: 50, // <--- CAMBIÁ ESTO: Bajalo a 90 o 100 para que corra a los pedos
-        onComplete: () => {
-            pateadorSprite.setFrame(2); // ¡PUM! Cuadro de impacto/patada
-        }
-    });
-
-
-    // Tu tween actual de la pelota viajando (Arranca en paralelo)
-    escena.tweens.add({
-        targets: window.ball, 
-        x: xT, y: yT, scaleX: 0.25, scaleY: 0.25, angle: 360, duration: 500,
-        onComplete: () => {
-            // ... Acá adentro de tu onComplete actual ...
-            
-            // Si fue GOL, hacemos que el pateador pase a su cuadro de festejo (Cuadro 2)
-            if (tipoResultado === "NORMAL" && !esAtajado) {
-                pateadorSprite.setFrame(2); 
-            }
-
-            // Destruimos al pateador para limpiar la pantalla justo cuando la pelota vuelve al punto penal
-            escena.time.delayedCall(1000, () => {
-                pateadorSprite.destroy(); // Lo borramos para que la cancha quede limpia para el próximo tiro
-                
-                // ... Tu lógica de reseteo actual (setPosition, cambiarTurno, etc.) ...
-            });
-        }
-    });
-
-
-    escena.tweens.add({
-        targets: window.ball, 
-        x: xT, y: yT, scaleX: 0.25, scaleY: 0.25, angle: 360, duration: 500,
-        onComplete: () => {
-            if (tipoResultado === "NORMAL" && !esAtajado) {
-                esJugador ? window.golesP1++ : window.golesCPU++;
-                esJugador ? window.historialP1.push("GOL") : window.historialCPU.push("GOL");
-
-                // === ⚽ CARTELAZO ANIMADO DE GOOOL RETRO (Capa superpuesta protegida) ⚽ ===
-                let fondoCartel = escena.add.rectangle(400, 300, 800, 90, 0x000000, 0.75).setDepth(10);
-                let textoGol = escena.add.text(400, 300, '¡GAAAAAL!', {
-                    fontSize: '64px',
-                    fill: '#f1c40f', 
-                    fontStyle: 'bold',
-                    fontFamily: 'Courier New, monospace',
-                    stroke: '#000000',
-                    strokeThickness: 8
-                }).setOrigin(0.5).setDepth(11).setScale(0);
-
-                escena.tweens.add({
-                    targets: textoGol,
-                    scaleX: 1.2, scaleY: 1.2, duration: 200, ease: 'Quad.easeOut',
-                    onComplete: () => {
-                        escena.tweens.add({ targets: textoGol, scaleX: 1, scaleY: 1, duration: 100 });
-                    }
-                });
-
-                // Lo destruimos milisegundos antes del reseteo del turno
-                escena.time.delayedCall(950, () => {
-                    escena.tweens.add({
-                        targets: [fondoCartel, textoGol], alpha: 0, duration: 120,
-                        onComplete: () => { fondoCartel.destroy(); textoGol.destroy(); }
-                    });
-                });
-                // =========================================================================
-
-            } else if (esAtajado) {
-                esJugador ? window.historialP1.push("ATA") : window.historialCPU.push("ATA");
-            } else {
-                esJugador ? window.historialP1.push(tipoResultado) : window.historialCPU.push(tipoResultado);
-            }
-            
-            let nomP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1].nombre;
-            let nomCPU = window.baseDeDatosEquipos[window.equipoSeleccionadoCPU].nombre;
-            window.marcadorTexto.setText(`${nomP1} ${window.golesP1} - ${window.golesCPU} ${nomCPU}`);
-            
-            escena.time.delayedCall(1000, () => {
-                // Mantenemos tu reseteo original a la altura que tenías en este archivo (380)
-                window.ball.setPosition(400, 380);
-                window.ball.setScale(0.4); 
-                window.ball.setAngle(0); 
-                
-                dibujarHUD(escena);
-                window.ejecutandoTiro = false;
-
-                if (esJugador) {
-                    window.esperandoAtajada = true; 
-                    window.esTurnoP1 = false;
-                    
-                    if (window.arqueroSprite) {
-                        window.arqueroSprite.setTexture(`${window.equipoSeleccionadoP1}_idle`);
-                        window.arqueroSprite.x = 400;
-                        window.arqueroSprite.y = 230;
-                        window.arqueroSprite.scaleX = 1;
-                        window.arqueroSprite.setFrame(0);
-                    }
-
-                    actualizarRetratos(escena); 
-                    iniciarBarra(escena, false);
-                } else {
-                    window.esperandoAtajada = false; 
-                    window.esTurnoP1 = true; 
-                    window.ronda++;
-                    window.tuColA = 2; 
-                    window.tuRowA = 1;
-
-                    if (verificarFinPartido()) {
-                        escena.time.delayedCall(50, () => {
-                            escena.sound.stopAll();
-                            alert(`¡Tanda Finalizada!\nResultado: P1 ${window.golesP1} - CPU ${window.golesCPU}`);
-                            location.reload();
-                        });
-                    } else {
-                        if (window.arqueroSprite) {
-                            window.arqueroSprite.setTexture(`${window.equipoSeleccionadoCPU}_idle`);
-                            window.arqueroSprite.x = 400;
-                            window.arqueroSprite.y = 230;
-                            window.arqueroSprite.scaleX = 1;
-                            window.arqueroSprite.setFrame(0);
-                        }
-
-                        actualizarRetratos(escena); 
-                        iniciarBarra(escena, true);
-                    }
-                }
-            });
-        }
-    });
 }
-
 
 function iniciarBarra(escena, esJugador) {
     window.barraTiempo.scaleX = 1;
