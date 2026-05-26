@@ -130,41 +130,39 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
                             window.tuRowA = 1;
 
                             if (verificarFinPartido()) {
-    escena.time.delayedCall(50, () => {
-        // --- 🥇 PASO 1: CARTEL DE RESULTADO (Estilo Gaaaal) ---
-        let fondoFinal = escena.add.rectangle(400, 300, 800, 110, 0x000000, 0.75).setDepth(12);
-        
-        // Evaluamos si el jugador ganó o perdió
-        let mensajeGanador = window.golesP1 > window.golesCPU ? "¡GANASTE EL PARTIDO!" : "¡PERDISTE EL PARTIDO!";
-        if (window.golesP1 === window.golesCPU) mensajeGanador = "¡EMPATE FINAL!"; // Por si hay empate
+                        escena.time.delayedCall(50, () => {
+                            // --- 🥇 PASO 1: CARTEL DE RESULTADO (Estilo Gaaaal) ---
+                            let fondoFinal = escena.add.rectangle(400, 300, 800, 110, 0x000000, 0.75).setDepth(12);
+                            
+                            // Evaluamos si el jugador ganó o perdió
+                            let mensajeGanador = window.golesP1 > window.golesCPU ? "¡GANASTE EL PARTIDO!" : "¡PERDISTE EL PARTIDO!";
+                            if (window.golesP1 === window.golesCPU) mensajeGanador = "¡EMPATE FINAL!"; // Por si hay empate
 
-        let textoResultado = escena.add.text(400, 300, `${mensajeGanador}\nResultado: P1 ${window.golesP1} - CPU ${window.golesCPU}`, {
-            fontSize: '32px',
-            fill: '#FFFF00',
-            fontStyle: 'bold',
-            fontFamily: 'Courier New',
-            align: 'center',
-            stroke: '#000000',
-            strokeThickness: 6
-        }).setOrigin(0.5).setDepth(13);
+                            let textoResultado = escena.add.text(400, 300, `${mensajeGanador}\nResultado: P1 ${window.golesP1} - CPU ${window.golesCPU}`, {
+                                fontSize: '32px',
+                                fill: '#FFFF00',
+                                fontStyle: 'bold',
+                                fontFamily: 'Courier New',
+                                align: 'center',
+                                stroke: '#000000',
+                                strokeThickness: 6
+                            }).setOrigin(0.5).setDepth(13);
 
-        // --- 🕒 PASO 2: ESPERAR 3.5 SEGUNDOS Y CAMBIAR A CRÉDITOS ---
-        escena.time.delayedCall(3500, () => {
-            // Destruimos el cartel flotante
-            fondoFinal.destroy();
-            textoResultado.destroy();
+                            // --- 🕒 PASO 2: ESPERAR 3.5 SEGUNDOS Y CAMBIAR A CRÉDITOS ---
+                            escena.time.delayedCall(3500, () => {
+                                // Destruimos el cartel flotante
+                                fondoFinal.destroy();
+                                textoResultado.destroy();
 
-            // Dibujamos tu foto limpia de creditos.png (Asegurate de precargarla como 'creditos')
-            let fotoCreditos = escena.add.image(400, 300, 'creditos').setDisplaySize(800, 600).setDepth(14);
+                                // Dibujamos tu foto limpia de creditos.png (Asegurate de precargarla como 'creditos')
+                                let fotoCreditos = escena.add.image(400, 300, 'creditos').setDisplaySize(800, 600).setDepth(14);
 
-            // Al hacer un clic en cualquier lado de los créditos, reinicia
-            escena.input.once('pointerdown', () => {
-                location.reload();
-            });
-        });
-    });
-
-
+                                // Al hacer un clic en cualquier lado de los créditos, reinicia
+                                escena.input.once('pointerdown', () => {
+                                    location.reload();
+                                });
+                            });
+                        });
                             } else {
                                 if (window.arqueroSprite) {
                                     window.arqueroSprite.setTexture(`${window.equipoSeleccionadoCPU}_idle`);
@@ -282,10 +280,10 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
         }
     }
 
-    if(window.rectTiro) window.rectTiro.destroy(); 
-    if(window.rectArquero) window.rectArquero.destroy();
-    window.rectTiro = escena.add.rectangle(cfg.x + (colT * cfg.anchoCelda) + (cfg.anchoCelda / 2), cfg.y + (rowT * cfg.altoCelda) + (cfg.altoCelda / 2), cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, 0x3366ff);
-    window.rectArquero = escena.add.rectangle(xA, yA, cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, esJugador ? 0xff6666 : 0x66ff66);
+    // if(window.rectTiro) window.rectTiro.destroy(); 
+    // if(window.rectArquero) window.rectArquero.destroy();
+    // window.rectTiro = escena.add.rectangle(cfg.x + (colT * cfg.anchoCelda) + (cfg.anchoCelda / 2), cfg.y + (rowT * cfg.altoCelda) + (cfg.altoCelda / 2), cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, 0x3366ff);
+    // window.rectArquero = escena.add.rectangle(xA, yA, cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, esJugador ? 0xff6666 : 0x66ff66);
 
     window.ball.setScale(0.4);
     window.ball.setAngle(0);
@@ -426,8 +424,8 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
 function iniciarBarra(escena, esJugador) {
     window.barraTiempo.scaleX = 1;
     escena.tweens.killTweensOf(window.barraTiempo);
-    if (window.rectTiro) { window.rectTiro.destroy(); window.rectTiro = null; }
-    if (window.rectArquero) { window.rectArquero.destroy(); window.rectArquero = null; }
+    // if (window.rectTiro) { window.rectTiro.destroy(); window.rectTiro = null; }
+    // if (window.rectArquero) { window.rectArquero.destroy(); window.rectArquero = null; }
 
     if (!esJugador) { window.zonaGolCPU = Math.floor(Math.random() * 15); }
 
