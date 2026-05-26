@@ -428,6 +428,7 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
 
                     if (verificarFinPartido()) {
                         escena.time.delayedCall(50, () => {
+                            escena.sound.stopAll();
                             alert(`¡Tanda Finalizada!\nResultado: P1 ${window.golesP1} - CPU ${window.golesCPU}`);
                             location.reload();
                         });

@@ -59,6 +59,7 @@ function preload() {
 
         // --- 🔊 CARGA DE MÚSICA DE MENÚ ---
     this.load.audio('musicaMenu', 'assets/sfx/menu.mp3');
+    this.load.audio('ambientePartido', 'assets/sfx/ambiente.mp3');
 
 }
 
@@ -164,20 +165,21 @@ function create() {
         let zonaIndioMalo = escena.add.rectangle(270, 540, 380, 480, 0xffffff, 0.0).setInteractive().setDepth(101);
         let zonaRanchosFC = escena.add.rectangle(720, 540, 380, 480, 0xffffff, 0.0).setInteractive().setDepth(101);
 
-        // Si elige INDIO MALO (Ataja Ranchos FC -> BRA)
+                // Si elige INDIO MALO
         zonaIndioMalo.on('pointerdown', () => {
-            escena.sound.stopAll();
+            escena.sound.stopAll(); // Frenamos la música del menú
+
+            // === 🏟️ ARRANCAMOS EL AMBIENTE DE TRIBUNA EN LOOP ===
+            escena.sound.play('ambientePartido', { loop: true, volume: 0.4 });
+
             window.equipoSeleccionadoP1 = "ARG";
             window.equipoSeleccionadoCPU = "BRA";
             
             if (window.arqueroSprite) { window.arqueroSprite.destroy(); }
-
             window.arqueroSprite = escena.add.sprite(400, 230, 'BRA_idle');
             window.arqueroSprite.setOrigin(0.5, 1).setScale(1).setFrame(0).setDepth(1);
 
-            // === 📸 CORRECCIÓN RETRATO DEL HUD ===
             actualizarRetratos(escena); 
-
             zonaIndioMalo.destroy();
             zonaRanchosFC.destroy();
             imagenSeleccion.destroy();
@@ -186,20 +188,21 @@ function create() {
             iniciarBarra(escena, true);
         });
 
-        // Si elige RANCHOS FC (Ataja Indio Malo -> ARG)
+        // Si elige RANCHOS FC
         zonaRanchosFC.on('pointerdown', () => {
-            escena.sound.stopAll();
+            escena.sound.stopAll(); // Frenamos la música del menú
+
+            // === 🏟️ ARRANCAMOS EL AMBIENTE DE TRIBUNA EN LOOP ===
+            escena.sound.play('ambientePartido', { loop: true, volume: 0.4 });
+
             window.equipoSeleccionadoP1 = "BRA";
             window.equipoSeleccionadoCPU = "ARG";
             
             if (window.arqueroSprite) { window.arqueroSprite.destroy(); }
-
             window.arqueroSprite = escena.add.sprite(400, 230, 'ARG_idle');
             window.arqueroSprite.setOrigin(0.5, 1).setScale(1).setFrame(0).setDepth(1);
 
-            // === 📸 CORRECCIÓN RETRATO DEL HUD ===
             actualizarRetratos(escena); 
-
             zonaIndioMalo.destroy();
             zonaRanchosFC.destroy();
             imagenSeleccion.destroy();
@@ -208,7 +211,6 @@ function create() {
             iniciarBarra(escena, true);
         });
     }
-
 
 
         // === CONTROL INTELIGENTE DE ARRANQUE POR URL ===
