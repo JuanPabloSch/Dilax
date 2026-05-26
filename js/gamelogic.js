@@ -38,7 +38,8 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
     let pateadorSprite = escena.add.sprite(360, 395, `${equipoPateador}_pateador`);
     pateadorSprite.setOrigin(0.5, 1); // Ancla en los pies
     pateadorSprite.setFrame(0);       // Arranca en cuadro de Carrera
-    pateadorSprite.setDepth(4);       // ¡MÁS ARRIBA QUE LA PELOTA!: La pelota tiene Depth 3, el jugador la tapa al correr
+    pateadorSprite.setDepth(4);   
+    pateadorSprite.setScale(1.4);    // ¡MÁS ARRIBA QUE LA PELOTA!: La pelota tiene Depth 3, el jugador la tapa al correr
 
 
     // --- NUEVO SISTEMA DE ZONAS DE ALCANCE DEL ARQUERO (COBERTURA MEJORADA) ---
@@ -139,18 +140,19 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
     window.rectTiro = escena.add.rectangle(cfg.x + (colT * cfg.anchoCelda) + (cfg.anchoCelda / 2), cfg.y + (rowT * cfg.altoCelda) + (cfg.altoCelda / 2), cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, 0x3366ff);
     window.rectArquero = escena.add.rectangle(xA, yA, cfg.anchoCelda, cfg.altoCelda).setStrokeStyle(4, esJugador ? 0xff6666 : 0x66ff66);
 
-    window.ball.setScale(0.5);
+    window.ball.setScale(0.4);
     window.ball.setAngle(0);
 
         // El pateador da un paso adelante hacia la pelota (X=400) y patea (Cuadro 1)
-    escena.tweens.add({
+        escena.tweens.add({
         targets: pateadorSprite,
         x: 390,
-        duration: 150, // Carrera corta y rápida antes del impacto
+        duration: 50, // <--- CAMBIÁ ESTO: Bajalo a 90 o 100 para que corra a los pedos
         onComplete: () => {
-            pateadorSprite.setFrame(1); // ¡PUM! Cuadro de impacto/patada
+            pateadorSprite.setFrame(2); // ¡PUM! Cuadro de impacto/patada
         }
     });
+
 
     // Tu tween actual de la pelota viajando (Arranca en paralelo)
     escena.tweens.add({
@@ -223,7 +225,7 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
             escena.time.delayedCall(1000, () => {
                 // Mantenemos tu reseteo original a la altura que tenías en este archivo (380)
                 window.ball.setPosition(400, 380);
-                window.ball.setScale(0.5); 
+                window.ball.setScale(0.4); 
                 window.ball.setAngle(0); 
                 
                 dibujarHUD(escena);
