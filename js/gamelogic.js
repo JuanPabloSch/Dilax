@@ -171,6 +171,7 @@ if (window.arqueroSprite) {
                         }
                         
                         else if (esAtajado) {
+                            escena.sound.play('clank');
                             escena.sound.play('nogol');
                             esJugador ? window.historialP1.push("ATA") : window.historialCPU.push("ATA");
                         } else {
