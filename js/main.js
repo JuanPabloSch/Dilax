@@ -15,12 +15,15 @@ const phaserConfig = {
 const game = new Phaser.Game(phaserConfig);
 
 function preload() {
-    // 1. Cargar fondo de cancha
+    // 1. Cargar fondo de cancha y pelota
     this.load.image('fondoCancha', 'bg/penales.png');
-
     this.load.image('pelotaNueva', 'assets/pelota.png'); 
 
-    // 2. Carga de fotos apuntando a tus archivos físicos reales en minúsculas
+    // 2. NUEVA CARGA OPTIMIZADA: Las dos hojas separadas de Rolo
+    this.load.spritesheet('rolo_idle', 'players/rolo_idle.png', { frameWidth: 110, frameHeight: 140 });
+    this.load.spritesheet('rolo_vuelo', 'players/rolo_vuelo.png', { frameWidth: 190, frameHeight: 140 });
+
+    // 3. Carga de fotos para los retratos estáticos del HUD
     this.load.image('El Negrouu', 'players/negrouu.png');
     this.load.image('Sebu', 'players/sebu.png');
     this.load.image('Chino', 'players/chino.png');
@@ -55,8 +58,7 @@ function create() {
         altoCelda: celdaAlto
     };
 
-    // --- MODIFICADO: MARCADOR SUPERIOR RETRO TRANSLÚCIDO ---
-    // Rectángulo negro de fondo con opacidad 0.6
+    // --- MARCADOR SUPERIOR RETRO TRANSLÚCIDO ---
     this.add.rectangle(400, 35, 520, 45, 0x000000, 0.6).setStrokeStyle(2, 0xffffff, 0.3);
     
     let nomP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1].nombre;
@@ -68,45 +70,51 @@ function create() {
         fontStyle: 'bold',
         fontFamily: 'Courier New, monospace'
     }).setOrigin(0.5);
-    // -------------------------------------------------------
 
+    // Contenedores de barra de tiempo
     this.add.rectangle(400, 550, 200, 20, 0x555555);
     window.barraTiempo = this.add.rectangle(300, 550, 200, 20, 0x00ff00).setOrigin(0, 0.5);
     
-    // FIX: Cambiado de 380 a 500 para arrancar exactamente en el punto penal real
-    window.ball = this.add.image(400, 500, 'pelotaNueva').setScale(0.5); 
+    // Pelota en capa superior (Depth 3)
+    window.ball = this.add.image(400, 500, 'pelotaNueva').setScale(0.5).setDepth(3); 
 
-// Crear las 15 zonas interactuables
-for (let col = 0; col < 5; col++) {
-    for (let row = 0; row < 3; row++) {
-        let x = arcoX + (col * celdaAncho) + (celdaAncho / 2);
-        let y = arcoY + (row * celdaAlto) + (celdaAlto / 2);
-        let zona = this.add.rectangle(x, y, celdaAncho, celdaAlto, 0xff0000, 0.01).setStrokeStyle(1, 0xffffff, 0.15).setInteractive();
-        
-        zona.on('pointerdown', () => {
-            // CRUCIAL: Bloqueo inmediato antes de evaluar cualquier otra línea
-            if (window.ejecutandoTiro) {
-                return; 
-            }
+    // --- ARQUERO INICIAL: Arranca firme en el centro con rolo_idle ---
+    window.arqueroSprite = this.add.sprite(400, 230, 'rolo_idle');
+    window.arqueroSprite.setOrigin(0.5, 1); 
+    window.arqueroSprite.setScale(1);
+    window.arqueroSprite.setFrame(0); 
+    window.arqueroSprite.setDepth(1); // Capa de fondo del arco
+
+    // Crear las 15 zonas interactuables
+    for (let col = 0; col < 5; col++) {
+        for (let row = 0; row < 3; row++) {
+            let x = arcoX + (col * celdaAncho) + (celdaAncho / 2);
+            let y = arcoY + (row * celdaAlto) + (celdaAlto / 2);
             
-            // Congelamos el juego de inmediato para el próximo milisegundo
-            window.ejecutandoTiro = true;
+            // Depth=2 garantiza que las zonas de clic queden arriba del cuerpo del arquero
+            let zona = this.add.rectangle(x, y, celdaAncho, celdaAlto, 0xff0000, 0.01)
+            .setStrokeStyle(1, 0xffffff, 0.15)
+            .setInteractive()
+            .setDepth(2);
+            
+            zona.on('pointerdown', () => {
+                if (window.ejecutandoTiro) return;
+                window.ejecutandoTiro = true;
 
-            if (window.esTurnoP1 && !window.esperandoAtajada) {
-                let arqueroCol = Math.floor(Math.random() * 5);
-                let arqueroRow = Math.floor(Math.random() * 3);
-                ejecutarDisparo(this, col, row, arqueroCol, arqueroRow, true);
-            } else if (window.esperandoAtajada) {
-                window.tuColA = col; 
-                window.tuRowA = row;
-                let c = window.zonaGolCPU % 5;
-                let r = Math.floor(window.zonaGolCPU / 5);
-                ejecutarDisparo(this, c, r, window.tuColA, window.tuRowA, false);
-            }
-        });
+                if (window.esTurnoP1 && !window.esperandoAtajada) {
+                    let arqueroCol = Math.floor(Math.random() * 5);
+                    let arqueroRow = Math.floor(Math.random() * 3);
+                    ejecutarDisparo(this, col, row, arqueroCol, arqueroRow, true);
+                } else if (window.esperandoAtajada) {
+                    window.tuColA = col; 
+                    window.tuRowA = row;
+                    let c = window.zonaGolCPU % 5;
+                    let r = Math.floor(window.zonaGolCPU / 5);
+                    ejecutarDisparo(this, c, r, window.tuColA, window.tuRowA, false);
+                }
+            });
+        }
     }
-}
-
     
     actualizarRetratos(this);
     iniciarBarra(this, true);
