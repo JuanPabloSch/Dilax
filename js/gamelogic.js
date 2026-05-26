@@ -148,6 +148,8 @@ if (window.arqueroSprite) {
                     onComplete: () => {
                         if (tipoResultado === "NORMAL" && !esAtajado) {
                             esJugador ? window.golesP1++ : window.golesCPU++;
+                            const sonidoGol = Math.random() < 0.5 ? 'goal1' : 'goal2';
+                            escena.sound.play(sonidoGol);
                             esJugador ? window.historialP1.push("GOL") : window.historialCPU.push("GOL") // === ⚽ ESTO SÓLO SE EJECUTA SI FUE GOL DE VERDAD ⚽ ===
                             let fondoCartel = escena.add.rectangle(400, 300, 800, 90, 0x000000, 0.75).setDepth(10);
                             let textoGol = escena.add.text(400, 300, '¡GAAAAAL!', {

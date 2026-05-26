@@ -60,6 +60,8 @@ function preload() {
         // --- 🔊 CARGA DE MÚSICA DE MENÚ ---
     this.load.audio('musicaMenu', 'assets/sfx/menu.mp3');
     this.load.audio('ambientePartido', 'assets/sfx/ambiente.mp3');
+    this.load.audio('goal1', 'assets/sfx/goal1.mp3');
+    this.load.audio('goal2', 'assets/sfx/goal2.mp3');
 
 }
 
