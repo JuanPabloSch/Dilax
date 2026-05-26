@@ -58,12 +58,31 @@ function ejecutarDisparo(escena, colT, rowT, colA, rowA, esJugador) {
                     onComplete: () => {
                         if (tipoResultado === "NORMAL" && !esAtajado) {
                             esJugador ? window.golesP1++ : window.golesCPU++;
-                            esJugador ? window.historialP1.push("GOL") : window.historialCPU.push("GOL");
-                        } else if (esAtajado) {
+                            esJugador ? window.historialP1.push("GOL") : window.historialCPU.push("GOL") // === ⚽ ESTO SÓLO SE EJECUTA SI FUE GOL DE VERDAD ⚽ ===
+    let fondoCartel = escena.add.rectangle(400, 300, 800, 90, 0x000000, 0.75).setDepth(10);
+    let textoGol = escena.add.text(400, 300, '¡GAAAAAL!', {
+        fontSize: '64px',
+        fill: '#FFFF00', 
+        fontStyle: 'bold',
+        fontFamily: 'Courier New',
+        stroke: '#000000',
+        strokeThickness: 8
+    }).setOrigin(0.5).setDepth(11);
+
+    // Se limpia antes de que termine la secuencia del tiro
+    escena.time.delayedCall(950, () => {
+        fondoCartel.destroy();
+        textoGol.destroy();
+    });
+}
+                        
+                        else if (esAtajado) {
                             esJugador ? window.historialP1.push("ATA") : window.historialCPU.push("ATA");
                         } else {
                             esJugador ? window.historialP1.push(tipoResultado) : window.historialCPU.push(tipoResultado);
                         }
+
+                        
                         
                         let nomP1 = window.baseDeDatosEquipos[window.equipoSeleccionadoP1].nombre;
                         let nomCPU = window.baseDeDatosEquipos[window.equipoSeleccionadoCPU].nombre;
