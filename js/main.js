@@ -102,12 +102,14 @@ function create() {
     window.ball = this.add.image(400, 380, 'pelotaNueva').setScale(0.35).setDepth(3); 
 
     // --- ARQUERO INICIAL ---
+        // === BORRÁ ESTAS LÍNEAS DE TU MAIN.JS ===
     let equipoAtajadorInicial = window.equipoSeleccionadoCPU; 
     window.arqueroSprite = this.add.sprite(400, 230, `${equipoAtajadorInicial}_idle`);
     window.arqueroSprite.setOrigin(0.5, 1); 
     window.arqueroSprite.setScale(1);
     window.arqueroSprite.setFrame(0); 
     window.arqueroSprite.setDepth(1);
+
 
     // Crear las 15 zonas interactuables
     for (let col = 0; col < 5; col++) {
@@ -148,49 +150,54 @@ function create() {
     // =======================================================
     
     function mostrarPantallaSeleccion() {
-        // 1. Dibujamos la foto de fondo de selección que me pasaste
         imagenSeleccion = escena.add.image(400, 300, 'fotoSeleccion').setDisplaySize(800, 600).setDepth(100);
         
-        // 2. Zona interactiva invisible arriba de INDIO MALO (Izquierda)
-        let zonaIndioMalo = escena.add.rectangle(270, 540, 380, 480, 0xffffff, 0.0)
-            .setInteractive().setDepth(101);
-            
-        // 3. Zona interactiva invisible arriba de RANCHOS FC (Derecha)
-        let zonaRanchosFC = escena.add.rectangle(720, 540, 380, 480, 0xffffff, 0.0)
-            .setInteractive().setDepth(101);
+        let zonaIndioMalo = escena.add.rectangle(270, 540, 380, 480, 0xffffff, 0.0).setInteractive().setDepth(101);
+        let zonaRanchosFC = escena.add.rectangle(720, 540, 380, 480, 0xffffff, 0.0).setInteractive().setDepth(101);
 
-        // --- LÓGICA DE SELECCIÓN AL HACER CLIC ---
-        
-        // Si clickea a Indio Malo (Izquierda): P1 es ARG, CPU es BRA
+        // Si elige INDIO MALO (Ataja Ranchos FC -> BRA)
         zonaIndioMalo.on('pointerdown', () => {
             window.equipoSeleccionadoP1 = "ARG";
             window.equipoSeleccionadoCPU = "BRA";
             
-            // Destruimos la pantalla de selección y las zonas para liberar memoria
+            if (window.arqueroSprite) { window.arqueroSprite.destroy(); }
+
+            window.arqueroSprite = escena.add.sprite(400, 230, 'BRA_idle');
+            window.arqueroSprite.setOrigin(0.5, 1).setScale(1).setFrame(0).setDepth(1);
+
+            // === 📸 CORRECCIÓN RETRATO DEL HUD ===
+            actualizarRetratos(escena); 
+
             zonaIndioMalo.destroy();
             zonaRanchosFC.destroy();
             imagenSeleccion.destroy();
             
-            // Arranca el partido
             window.pantallaActual = "PARTIDO";
             iniciarBarra(escena, true);
         });
 
-        // Si clickea a Ranchos FC (Derecha): P1 es BRA, CPU es ARG
+        // Si elige RANCHOS FC (Ataja Indio Malo -> ARG)
         zonaRanchosFC.on('pointerdown', () => {
             window.equipoSeleccionadoP1 = "BRA";
             window.equipoSeleccionadoCPU = "ARG";
             
-            // Destruimos la pantalla de selección y las zonas
+            if (window.arqueroSprite) { window.arqueroSprite.destroy(); }
+
+            window.arqueroSprite = escena.add.sprite(400, 230, 'ARG_idle');
+            window.arqueroSprite.setOrigin(0.5, 1).setScale(1).setFrame(0).setDepth(1);
+
+            // === 📸 CORRECCIÓN RETRATO DEL HUD ===
+            actualizarRetratos(escena); 
+
             zonaIndioMalo.destroy();
             zonaRanchosFC.destroy();
             imagenSeleccion.destroy();
             
-            // Arranca el partido
             window.pantallaActual = "PARTIDO";
             iniciarBarra(escena, true);
         });
     }
+
 
 
     // Dibujamos la pantalla de inicio con Depth=101 arriba de absolutamente todo
