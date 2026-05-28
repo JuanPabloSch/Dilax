@@ -218,22 +218,50 @@ function create() {
     }
 
 
-        // === CONTROL INTELIGENTE DE ARRANQUE POR URL ===
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    if (urlParams.get('saltarInicio') === 'true') {
-        // Si viene de los créditos, salta el inicio y va directo a la selección
+    // === CONTROL INTELIGENTE DE ARRANQUE POR URL ===
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get('saltarInicio') === 'true') {
+    // Si viene de los créditos, salta el inicio y va directo a la selección
+    window.pantallaActual = "SELECCION";
+    mostrarPantallaSeleccion();
+
+} else {
+
+    // Imagen portada
+    imagenInicio = this.add.image(400, 300, 'fotoInicio')
+        .setDisplaySize(800, 600)
+        .setDepth(101)
+        .setInteractive();
+
+    // Texto "Click para continuar"
+    const textoContinuar = this.add.text(400, 550, 'HAGA CLICK PARA CONTINUAR', {
+        fontSize: '24px',
+        fill: '#ffffff',
+        fontFamily: 'Arial',
+        stroke: '#000000',
+        strokeThickness: 5
+    })
+    .setOrigin(0.5)
+    .setDepth(102);
+
+    // Efecto parpadeo
+    this.tweens.add({
+        targets: textoContinuar,
+        alpha: 0.2,
+        duration: 800,
+        yoyo: true,
+        repeat: -1
+    });
+
+    imagenInicio.on('pointerdown', () => {
+
+        textoContinuar.destroy();
+        imagenInicio.destroy();
+
         window.pantallaActual = "SELECCION";
         mostrarPantallaSeleccion();
-    } else {
-        // Si abre el juego por primera vez de cero, muestra la portada normal
-        imagenInicio = this.add.image(400, 300, 'fotoInicio').setDisplaySize(800, 600).setDepth(101).setInteractive();
-        
-        imagenInicio.on('pointerdown', () => {
-            imagenInicio.destroy();
-            window.pantallaActual = "SELECCION";
-            mostrarPantallaSeleccion();
-        });
-    }
+    });
+}
 
 }
